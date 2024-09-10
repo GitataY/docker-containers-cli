@@ -9,5 +9,7 @@ updates:
     directory: "./.github/workflows" 
     schedule:
       interval: "weekly"
-    assignee:
-     - "wamuyu"
+    assignees:
+      - "wamuyu"
+    reviewers:
+      - "wamuyu"
