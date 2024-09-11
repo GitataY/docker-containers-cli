@@ -1,46 +1,47 @@
-name: docker containers CI
+name: Go CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go: [1.16", "1.17", "1.18", "1.19", "1.20", "1.21", "1.22"]
-      fail-fast: false
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ matrix.go }}
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.22' 
 
-      - name: Cache Go Modules
-        uses: actions/cache@v3
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
 
-      - name: Install Dependencies
-        run: go mod tidy
+    - name: Install dependencies
+      run: go mod download
 
-      - name: Build Project
-        run: go build ./...
+    - name: Run tests
+      run: go test ./...
 
-      - name: Run Tests
-        run: go test -v ./...
+    - name: Run golangci-lint
+      uses: golangci/golangci-lint-action@v6
+      with:
+        version: v1.61.0 
+        args: --timeout=5m
 
-      - name: Check Linting
-        uses: golangci/golangci-lint-action@v6
-        with:
-          skip-cache: true
+    - name: Build application
+      run: go build -v ./...

@@ -13,9 +13,13 @@ import (
 	"github.com/docker/docker/client"
 )
 
-var baseStyle = lipgloss.NewStyle().
-	BorderStyle(lipgloss.NormalBorder()).
-	BorderForeground(lipgloss.Color("240"))
+const CommandTruncateLength = 20
+
+func getBaseStyle() lipgloss.Style {
+	return lipgloss.NewStyle().
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("240"))
+}
 
 type model struct {
 	table table.Model
@@ -43,7 +47,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	return baseStyle.Render(m.table.View()) + "\n"
+	return getBaseStyle().Render(m.table.View()) + "\n"
 }
 
 func FetchDockerContainers() []table.Row {
@@ -58,7 +62,7 @@ func FetchDockerContainers() []table.Row {
 	}
 
 	// Convert Docker container data into table rows
-	var rows []table.Row
+	rows := make([]table.Row, 0, len(containers))
 	for _, ctr := range containers {
 		names := strings.Join(ctr.Names, ", ")
 		command := fmt.Sprintf("%.20s", ctr.Command)
