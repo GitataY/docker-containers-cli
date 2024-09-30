@@ -5,11 +5,13 @@
 
 version: 2
 updates:
-  - package-ecosystem: "github-actions" 
-    directory: "./.github/workflows" 
+  - package-ecosystem: "github-actions"
+    directory: "./.github/workflows"
     schedule:
       interval: "weekly"
+      day: "wednesday"
+      time: "10:00"
     assignees:
-      - "wamuyu"
+      - "GitataY"
     reviewers:
-      - "wamuyu"
+      - "GitataY"
