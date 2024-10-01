@@ -9,37 +9,24 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-const (
-	ContainerIDWidth = 20
-	ImageWidth       = 25
-	CommandWidth     = 25
-	CreatedWidth     = 20
-	StatusWidth      = 15
-	PortsWidth       = 30
-	NamesWidth       = 20
-	TableHeight      = 7
-)
-
 func main() {
 	columns := []table.Column{
-		{Title: "Container ID", Width: ContainerIDWidth},
-		{Title: "Image", Width: ImageWidth},
-		{Title: "COMMAND", Width: CommandWidth},
-		{Title: "CREATED", Width: CreatedWidth},
-		{Title: "STATUS", Width: StatusWidth},
-		{Title: "PORTS", Width: PortsWidth},
-		{Title: "NAMES", Width: NamesWidth},
+		{Title: "Container ID", Width: 20},
+		{Title: "Image", Width: 25},
+		{Title: "COMMAND", Width: 25},
+		{Title: "CREATED", Width: 20},
+		{Title: "STATUS", Width: 15},
+		{Title: "PORTS", Width: 30},
+		{Title: "NAMES", Width: 20},
 	}
 
 	// Fetch container data from models.go
 	rows := FetchDockerContainers()
-
 	// Create table model
 	tableModel := table.New(
 		table.WithColumns(columns),
 		table.WithRows(rows),
 		table.WithFocused(true),
-		table.WithHeight(TableHeight),
 	)
 
 	// Set styles

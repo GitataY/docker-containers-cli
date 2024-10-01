@@ -26,11 +26,21 @@ type model struct {
 	table table.Model
 }
 
+type terminalSize struct {
+	width  int
+	height int
+}
+
 func (m model) Init() tea.Cmd { return nil }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
-	if msg, ok := msg.(tea.KeyMsg); ok {
+	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.table.SetHeight(msg.Height - 2) // Leave some space for margins
+		m.table.SetWidth(msg.Width)
+
+	case tea.KeyMsg:
 		switch msg.String() {
 		case "esc":
 			if m.table.Focused() {
