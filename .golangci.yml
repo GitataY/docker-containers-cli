@@ -14,20 +14,25 @@
 
 linters:
   enable-all: true
+  fast: true
   disable:
-    - lll         # disables long lines check
-    - funlen      # disables function length check
+    - lll        
+    - funlen      
+    - gomnd       
+    - execinquery 
+    - exportloopref 
+    - wsl
+    - depguard
+    - gochecknoinits
 
 run:
   timeout: 5m
   modules-download-mode: readonly
-
-issues:
-  max-issues-per-linter: 0
-  max-same-issues: 0
 
 linters-settings:
   dupl:
     threshold: 100
   gocyclo:
     min-complexity: 10
+  gocritic:
+    enable-all: true

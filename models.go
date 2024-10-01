@@ -10,6 +10,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/filters" // Added import for filters
 	"github.com/docker/docker/client"
 )
 
@@ -29,8 +30,7 @@ func (m model) Init() tea.Cmd { return nil }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
+	if msg, ok := msg.(tea.KeyMsg); ok {
 		switch msg.String() {
 		case "esc":
 			if m.table.Focused() {
@@ -42,7 +42,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 	}
+
 	m.table, cmd = m.table.Update(msg)
+
 	return m, cmd
 }
 
@@ -56,7 +58,13 @@ func FetchDockerContainers() []table.Row {
 		panic(err)
 	}
 
-	containers, err := cli.ContainerList(context.Background(), container.ListOptions{})
+	// Initialize Filters using filters.NewArgs()
+	containers, err := cli.ContainerList(context.Background(), container.ListOptions{
+		All:     true,              // List all containers (both running and stopped)
+		Limit:   0,                 // No limit to the number of containers returned
+		Size:    false,             // Don't return size info (set to true if needed)
+		Filters: filters.NewArgs(), // Properly initialized Filters
+	})
 	if err != nil {
 		panic(err)
 	}
@@ -67,6 +75,7 @@ func FetchDockerContainers() []table.Row {
 		names := strings.Join(ctr.Names, ", ")
 		command := fmt.Sprintf("%.20s", ctr.Command)
 		created := time.Unix(ctr.Created, 0).Format("2006-01-02 15:04:05")
+
 		var portInfo []string
 		for _, port := range ctr.Ports {
 			portInfo = append(portInfo, fmt.Sprintf("%d->%d/%s", port.PrivatePort, port.PublicPort, port.Type))
@@ -84,5 +93,6 @@ func FetchDockerContainers() []table.Row {
 			names,
 		})
 	}
+
 	return rows
 }
