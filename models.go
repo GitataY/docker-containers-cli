@@ -26,10 +26,10 @@ type model struct {
 	table table.Model
 }
 
-type terminalSize struct {
-	width  int
-	height int
-}
+// type terminalSize struct {
+// 	width  int
+// 	height int
+// }
 
 func (m model) Init() tea.Cmd { return nil }
 
