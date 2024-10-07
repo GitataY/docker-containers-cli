@@ -20,16 +20,13 @@ func main() {
 		{Title: "NAMES", Width: 20},
 	}
 
-	// Fetch container data from models.go
 	rows := FetchDockerContainers()
-	// Create table model
 	tableModel := table.New(
 		table.WithColumns(columns),
 		table.WithRows(rows),
 		table.WithFocused(true),
 	)
 
-	// Set styles
 	styles := table.DefaultStyles()
 	styles.Header = styles.Header.
 		BorderStyle(lipgloss.NormalBorder()).
@@ -43,10 +40,8 @@ func main() {
 
 	tableModel.SetStyles(styles)
 
-	// Initialize the TUI model
 	m := model{table: tableModel}
 
-	// Run the TUI program
 	if _, err := tea.NewProgram(m).Run(); err != nil {
 		log.Println("Error running program:", err)
 		os.Exit(1)

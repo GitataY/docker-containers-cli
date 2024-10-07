@@ -10,7 +10,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/filters" // Added import for filters
+	"github.com/docker/docker/api/types/filters" 
 	"github.com/docker/docker/client"
 )
 
@@ -26,18 +26,13 @@ type model struct {
 	table table.Model
 }
 
-// type terminalSize struct {
-// 	width  int
-// 	height int
-// }
-
 func (m model) Init() tea.Cmd { return nil }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.table.SetHeight(msg.Height - 2) // Leave some space for margins
+		m.table.SetHeight(msg.Height - 2)
 		m.table.SetWidth(msg.Width)
 
 	case tea.KeyMsg:
@@ -68,18 +63,16 @@ func FetchDockerContainers() []table.Row {
 		panic(err)
 	}
 
-	// Initialize Filters using filters.NewArgs()
 	containers, err := cli.ContainerList(context.Background(), container.ListOptions{
-		All:     true,              // List all containers (both running and stopped)
-		Limit:   0,                 // No limit to the number of containers returned
-		Size:    false,             // Don't return size info (set to true if needed)
-		Filters: filters.NewArgs(), // Properly initialized Filters
+		All:     true,              
+		Limit:   0,                 
+		Size:    false,         
+		Filters: filters.NewArgs(), 
 	})
 	if err != nil {
 		panic(err)
 	}
 
-	// Convert Docker container data into table rows
 	rows := make([]table.Row, 0, len(containers))
 	for _, ctr := range containers {
 		names := strings.Join(ctr.Names, ", ")
@@ -92,7 +85,6 @@ func FetchDockerContainers() []table.Row {
 		}
 		ports := strings.Join(portInfo, ", ")
 
-		// Append a row containing container details
 		rows = append(rows, table.Row{
 			ctr.ID[:12],
 			ctr.Image,
