@@ -6,7 +6,7 @@ require (
 	github.com/charmbracelet/bubbles v0.20.0
 	github.com/charmbracelet/bubbletea v1.1.0
 	github.com/charmbracelet/lipgloss v0.13.0
-	github.com/docker/docker v27.2.1+incompatible
+	github.com/docker/docker v28.0.0+incompatible
 )
 
 require (
